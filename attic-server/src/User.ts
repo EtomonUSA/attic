@@ -438,7 +438,7 @@ if (query.populate) usersQuery.populate(query.populate);
 
 const User = mongoose.model<IUser&Document>('User', UserSchema);
 
-export const UNAUTHROIZED_USERNAME = config.get('unauthorizedUserName');
+export const UNAUTHROIZED_USERNAME = config.get('unauthorizedUsername');
 
 ApplicationContext.once('launch.loadModels.complete', async () => {
   {
@@ -469,7 +469,7 @@ ApplicationContext.once('launch.loadModels.complete', async () => {
   }
 
   {
-    if (config.rootUsername && config.rootPassword) {
+    if (config.rootUsername/* && config.rootPassword*/) {
       const delta: any = {
         $setOnInsert: {
           username: config.rootUsername
@@ -481,7 +481,7 @@ ApplicationContext.once('launch.loadModels.complete', async () => {
 
       const extra: any = {
         scope: [ '.*' ],
-        password: await bcryptPassword(config.rootPassword),
+        password: config.rootPassword ? await bcryptPassword(config.rootPassword) : void(0),
         groups
       }
 
